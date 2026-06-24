@@ -1,0 +1,216 @@
+You are generating MCQ questions for a job-readiness quiz platform for AI/ML engineers.
+
+Domain: Classical Machine Learning
+
+Generate questions for ALL of the following topics and difficulties (2550 questions total):
+
+  - Linear & Logistic Regression [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: linear regression, logistic regression, regularization
+  - Decision Trees [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: splitting criteria, gini, entropy, pruning
+  - Random Forest [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: bagging, feature importance, ensembles
+  - Bagging & Boosting [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: bagging, AdaBoost, gradient boosting, XGBoost
+  - KNN [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: distance metrics, k selection, curse of dimensionality
+  - SVM [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: margin, kernels, support vectors
+  - K-Means [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: centroids, inertia, elbow method
+  - DBSCAN [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: density-based clustering, epsilon, min samples
+  - Agglomerative Clustering [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: hierarchical clustering, linkage, dendrograms
+  - Naive Bayes [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: bayes theorem, conditional independence, gaussian/multinomial
+  - Classification vs Regression [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: problem framing, output types
+  - Loss Functions [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: MSE, cross-entropy, hinge loss
+  - Evaluation Metrics [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: accuracy, precision, recall, F1, ROC-AUC
+  - Supervised vs Unsupervised [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: labels, task types
+  - Bias-Variance & Overfitting [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: bias-variance tradeoff, overfitting, underfitting
+  - EDA & Distributions [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: exploratory data analysis, distribution checks, outliers
+  - scikit-learn Practical [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: pipelines, train/test split, cross-validation, hyperparameter tuning
+
+---
+
+Difficulty calibration:
+- BEGINNER     → fundamental concepts, definitions, basic usage
+- INTERMEDIATE → practical application, common patterns, tradeoffs
+- ADVANCED     → deep internals, edge cases, system design, optimization
+
+Rules (follow strictly):
+1. Exactly 50 questions per topic per difficulty level listed above
+2. Every question has exactly 4 options — keys A, B, C, D — positions 1, 2, 3, 4
+3. correct_answer is a list with exactly ONE key e.g. ["B"]
+4. No LaTeX, no math derivations, no proofs — real job interview level only
+5. Spread questions across the subtopics listed for each topic
+6. Return ONLY the JSON object — no markdown fences, no explanation text
+
+Each question must follow this structure:
+{
+  "question": "...",
+  "options": [
+    {"key": "A", "value": "...", "position": 1},
+    {"key": "B", "value": "...", "position": 2},
+    {"key": "C", "value": "...", "position": 3},
+    {"key": "D", "value": "...", "position": 4}
+  ],
+  "correct_answer": ["B"],
+  "explanation": "1-2 sentence explanation of why the answer is correct.",
+  "job_relevance": "Why this is asked in ML/AI engineering interviews."
+}
+
+Return this exact JSON structure:
+
+{
+  "domain": "machine_learning",
+  "topics": [
+    {
+      "topic": "Linear & Logistic Regression",
+      "subtopics": ['linear regression', 'logistic regression', 'regularization'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Decision Trees",
+      "subtopics": ['splitting criteria', 'gini', 'entropy', 'pruning'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Random Forest",
+      "subtopics": ['bagging', 'feature importance', 'ensembles'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Bagging & Boosting",
+      "subtopics": ['bagging', 'AdaBoost', 'gradient boosting', 'XGBoost'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "KNN",
+      "subtopics": ['distance metrics', 'k selection', 'curse of dimensionality'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "SVM",
+      "subtopics": ['margin', 'kernels', 'support vectors'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "K-Means",
+      "subtopics": ['centroids', 'inertia', 'elbow method'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "DBSCAN",
+      "subtopics": ['density-based clustering', 'epsilon', 'min samples'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Agglomerative Clustering",
+      "subtopics": ['hierarchical clustering', 'linkage', 'dendrograms'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Naive Bayes",
+      "subtopics": ['bayes theorem', 'conditional independence', 'gaussian/multinomial'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Classification vs Regression",
+      "subtopics": ['problem framing', 'output types'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Loss Functions",
+      "subtopics": ['MSE', 'cross-entropy', 'hinge loss'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Evaluation Metrics",
+      "subtopics": ['accuracy', 'precision', 'recall', 'F1'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Supervised vs Unsupervised",
+      "subtopics": ['labels', 'task types'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Bias-Variance & Overfitting",
+      "subtopics": ['bias-variance tradeoff', 'overfitting', 'underfitting'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "EDA & Distributions",
+      "subtopics": ['exploratory data analysis', 'distribution checks', 'outliers'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "scikit-learn Practical",
+      "subtopics": ['pipelines', 'train/test split', 'cross-validation', 'hyperparameter tuning'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    }
+  ]
+}
+
+Save the output as: prompts/machine_learning.json
+Then run: python scripts/import_questions.py prompts/machine_learning.json

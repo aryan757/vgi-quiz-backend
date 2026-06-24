@@ -1,0 +1,146 @@
+You are generating MCQ questions for a job-readiness quiz platform for AI/ML engineers.
+
+Domain: Computer Vision
+
+Generate questions for ALL of the following topics and difficulties (1500 questions total):
+
+  - CNN Fundamentals [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: kernels, filters, padding, stride, pooling
+  - Activation Functions [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: relu, sigmoid, tanh, softmax, leaky relu
+  - Batch Normalization [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: internal covariate shift, training stability
+  - Dropout & Regularization [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: dropout, l1/l2, overfitting prevention
+  - Network Depth Tradeoffs [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: hidden layers, depth vs width, vanishing gradients
+  - Classic CNN Architectures [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: LeNet, VGG, ResNet, Inception
+  - Object Detection Fundamentals [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: IoU, anchor boxes, NMS
+  - YOLO Family [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: YOLOv5, YOLOv8, YOLOv10, YOLOv11, YOLO-World
+  - Image Segmentation [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: semantic segmentation, instance segmentation
+  - CV Practical Pipeline [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: OpenCV preprocessing, annotation, ONNX, TensorRT, CoreML
+
+---
+
+Difficulty calibration:
+- BEGINNER     → fundamental concepts, definitions, basic usage
+- INTERMEDIATE → practical application, common patterns, tradeoffs
+- ADVANCED     → deep internals, edge cases, system design, optimization
+
+Rules (follow strictly):
+1. Exactly 50 questions per topic per difficulty level listed above
+2. Every question has exactly 4 options — keys A, B, C, D — positions 1, 2, 3, 4
+3. correct_answer is a list with exactly ONE key e.g. ["B"]
+4. No LaTeX, no math derivations, no proofs — real job interview level only
+5. Spread questions across the subtopics listed for each topic
+6. Return ONLY the JSON object — no markdown fences, no explanation text
+
+Each question must follow this structure:
+{
+  "question": "...",
+  "options": [
+    {"key": "A", "value": "...", "position": 1},
+    {"key": "B", "value": "...", "position": 2},
+    {"key": "C", "value": "...", "position": 3},
+    {"key": "D", "value": "...", "position": 4}
+  ],
+  "correct_answer": ["B"],
+  "explanation": "1-2 sentence explanation of why the answer is correct.",
+  "job_relevance": "Why this is asked in ML/AI engineering interviews."
+}
+
+Return this exact JSON structure:
+
+{
+  "domain": "computer_vision",
+  "topics": [
+    {
+      "topic": "CNN Fundamentals",
+      "subtopics": ['kernels', 'filters', 'padding', 'stride'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Activation Functions",
+      "subtopics": ['relu', 'sigmoid', 'tanh', 'softmax'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Batch Normalization",
+      "subtopics": ['internal covariate shift', 'training stability'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Dropout & Regularization",
+      "subtopics": ['dropout', 'l1/l2', 'overfitting prevention'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Network Depth Tradeoffs",
+      "subtopics": ['hidden layers', 'depth vs width', 'vanishing gradients'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Classic CNN Architectures",
+      "subtopics": ['LeNet', 'VGG', 'ResNet', 'Inception'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Object Detection Fundamentals",
+      "subtopics": ['IoU', 'anchor boxes', 'NMS'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "YOLO Family",
+      "subtopics": ['YOLOv5', 'YOLOv8', 'YOLOv10', 'YOLOv11'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Image Segmentation",
+      "subtopics": ['semantic segmentation', 'instance segmentation'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "CV Practical Pipeline",
+      "subtopics": ['OpenCV preprocessing', 'annotation', 'ONNX', 'TensorRT'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    }
+  ]
+}
+
+Save the output as: prompts/computer_vision.json
+Then run: python scripts/import_questions.py prompts/computer_vision.json

@@ -1,0 +1,144 @@
+You are generating MCQ questions for a job-readiness quiz platform for AI/ML engineers.
+
+Domain: Generative AI / LLM Systems
+
+Generate questions for ALL of the following topics and difficulties (1400 questions total):
+
+  - RAG [INTERMEDIATE + ADVANCED] — subtopics: embeddings, chunking, vector search, HNSW, reranking
+  - AI Agents [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: ReAct pattern, tool calling, agent loops
+  - MCP [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: model context protocol, vs tool call, why it exists
+  - Google ADK [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: agent development kit, concepts, vs LangChain
+  - Fine-tuning [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: full fine-tuning, LoRA, QLoRA, prompt-tuning, instruction-tuning
+  - Hugging Face [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: Transformers library, model hub, pipelines
+  - Transformers [BEGINNER + ADVANCED] — subtopics: self-attention, encoder-decoder, attention is all you need
+  - Vector Databases [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: FAISS, Pinecone, Chroma, indexing, ANN search
+  - Inference Optimization [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: quantization, int8, distillation, KV cache
+  - LLM Evaluation [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: benchmarks, LLM-as-judge, hallucination metrics
+
+---
+
+Difficulty calibration:
+- BEGINNER     → fundamental concepts, definitions, basic usage
+- INTERMEDIATE → practical application, common patterns, tradeoffs
+- ADVANCED     → deep internals, edge cases, system design, optimization
+
+Rules (follow strictly):
+1. Exactly 50 questions per topic per difficulty level listed above
+2. Every question has exactly 4 options — keys A, B, C, D — positions 1, 2, 3, 4
+3. correct_answer is a list with exactly ONE key e.g. ["B"]
+4. No LaTeX, no math derivations, no proofs — real job interview level only
+5. Spread questions across the subtopics listed for each topic
+6. Return ONLY the JSON object — no markdown fences, no explanation text
+
+Each question must follow this structure:
+{
+  "question": "...",
+  "options": [
+    {"key": "A", "value": "...", "position": 1},
+    {"key": "B", "value": "...", "position": 2},
+    {"key": "C", "value": "...", "position": 3},
+    {"key": "D", "value": "...", "position": 4}
+  ],
+  "correct_answer": ["B"],
+  "explanation": "1-2 sentence explanation of why the answer is correct.",
+  "job_relevance": "Why this is asked in ML/AI engineering interviews."
+}
+
+Return this exact JSON structure:
+
+{
+  "domain": "genai",
+  "topics": [
+    {
+      "topic": "RAG",
+      "subtopics": ['embeddings', 'chunking', 'vector search', 'HNSW'],
+      "batches": [
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "AI Agents",
+      "subtopics": ['ReAct pattern', 'tool calling', 'agent loops'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "MCP",
+      "subtopics": ['model context protocol', 'vs tool call', 'why it exists'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Google ADK",
+      "subtopics": ['agent development kit', 'concepts', 'vs LangChain'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Fine-tuning",
+      "subtopics": ['full fine-tuning', 'LoRA', 'QLoRA', 'prompt-tuning'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Hugging Face",
+      "subtopics": ['Transformers library', 'model hub', 'pipelines'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Transformers",
+      "subtopics": ['self-attention', 'encoder-decoder', 'attention is all you need'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Vector Databases",
+      "subtopics": ['FAISS', 'Pinecone', 'Chroma', 'indexing'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Inference Optimization",
+      "subtopics": ['quantization', 'int8', 'distillation', 'KV cache'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "LLM Evaluation",
+      "subtopics": ['benchmarks', 'LLM-as-judge', 'hallucination metrics'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    }
+  ]
+}
+
+Save the output as: prompts/genai.json
+Then run: python scripts/import_questions.py prompts/genai.json

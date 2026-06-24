@@ -1,0 +1,86 @@
+You are generating MCQ questions for a job-readiness quiz platform for AI/ML engineers.
+
+Domain: Deep Learning
+
+Generate questions for ALL of the following topics and difficulties (600 questions total):
+
+  - Neural Network Fundamentals [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: forward pass, backpropagation intuition, gradient descent
+  - RNN [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: sequence modeling, vanishing gradient, hidden state
+  - LSTM [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: forget gate, input gate, output gate, long-term dependencies
+  - Transformer Architecture [BEGINNER + INTERMEDIATE + ADVANCED] — subtopics: self-attention, multi-head attention, positional encoding
+
+---
+
+Difficulty calibration:
+- BEGINNER     → fundamental concepts, definitions, basic usage
+- INTERMEDIATE → practical application, common patterns, tradeoffs
+- ADVANCED     → deep internals, edge cases, system design, optimization
+
+Rules (follow strictly):
+1. Exactly 50 questions per topic per difficulty level listed above
+2. Every question has exactly 4 options — keys A, B, C, D — positions 1, 2, 3, 4
+3. correct_answer is a list with exactly ONE key e.g. ["B"]
+4. No LaTeX, no math derivations, no proofs — real job interview level only
+5. Spread questions across the subtopics listed for each topic
+6. Return ONLY the JSON object — no markdown fences, no explanation text
+
+Each question must follow this structure:
+{
+  "question": "...",
+  "options": [
+    {"key": "A", "value": "...", "position": 1},
+    {"key": "B", "value": "...", "position": 2},
+    {"key": "C", "value": "...", "position": 3},
+    {"key": "D", "value": "...", "position": 4}
+  ],
+  "correct_answer": ["B"],
+  "explanation": "1-2 sentence explanation of why the answer is correct.",
+  "job_relevance": "Why this is asked in ML/AI engineering interviews."
+}
+
+Return this exact JSON structure:
+
+{
+  "domain": "deep_learning",
+  "topics": [
+    {
+      "topic": "Neural Network Fundamentals",
+      "subtopics": ['forward pass', 'backpropagation intuition', 'gradient descent'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "RNN",
+      "subtopics": ['sequence modeling', 'vanishing gradient', 'hidden state'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "LSTM",
+      "subtopics": ['forget gate', 'input gate', 'output gate', 'long-term dependencies'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    },
+    {
+      "topic": "Transformer Architecture",
+      "subtopics": ['self-attention', 'multi-head attention', 'positional encoding'],
+      "batches": [
+        {"difficulty": "beginner", "questions": [ ...50 questions... ]},
+        {"difficulty": "intermediate", "questions": [ ...50 questions... ]},
+        {"difficulty": "advanced", "questions": [ ...50 questions... ]}
+      ]
+    }
+  ]
+}
+
+Save the output as: prompts/deep_learning.json
+Then run: python scripts/import_questions.py prompts/deep_learning.json

@@ -1,0 +1,19 @@
+# Environment — contains live Mongo credentials and API keys. NEVER commit.
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Seeding progress / logs
+scripts/.seed_progress.json
+*.log
+
+# OS
+.DS_Store
