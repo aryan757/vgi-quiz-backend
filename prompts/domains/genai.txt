@@ -1,0 +1,65 @@
+You are generating MCQ questions for a job-readiness quiz platform for AI/ML engineers.
+
+Domain: genai
+Total questions needed: 300
+
+Split exactly as:
+- 75 questions with difficulty: "beginner"
+- 75 questions with difficulty: "intermediate"
+- 75 questions with difficulty: "advanced"
+- 75 questions with difficulty: "mixed"
+
+Difficulty calibration:
+- beginner   → definitions, basic concepts, what-is questions, fundamental usage
+- intermediate → practical patterns, tradeoffs, how-it-works, common mistakes
+- advanced   → deep internals, optimization, system design, edge cases, production concerns
+- mixed      → scenario-based or comparative questions that combine concepts across levels
+               (e.g. "You need to build a RAG system for X — what approach and why?")
+
+Scope — questions MUST collectively cover ALL of the following areas
+(spread questions evenly across these areas, do not focus on just one):
+  • LangChain: prompt templates, chains, LCEL, tools, agents, memory (InMemorySaver),
+    RunnablePassthrough, custom output parsers
+  • RAG (Retrieval-Augmented Generation): embeddings, chunking strategies, vector search,
+    HNSW algorithm, reranking, hybrid search, retrieval evaluation
+  • AI Agents: ReAct pattern, tool calling, agent loops, planning, multi-agent systems
+  • MCP (Model Context Protocol): what it is, why it exists, how it differs from plain tool calls
+  • Google ADK (Agent Development Kit): core concepts, when to use vs LangChain
+  • Fine-tuning: full fine-tuning vs LoRA vs QLoRA vs prompt-tuning vs instruction-tuning —
+    tradeoffs, when to use each, PEFT concepts
+  • Hugging Face: Transformers library, model hub, pipeline API, tokenizers, AutoModel classes
+  • Vector Databases: FAISS, Pinecone, Chroma, Weaviate — indexing, ANN search, use cases
+  • Inference Optimization: quantization (int8, int4), distillation, KV cache, speculative decoding,
+    vLLM concepts, batching strategies
+  • LLM Evaluation: benchmarks (MMLU, HumanEval), LLM-as-judge, hallucination metrics,
+    RAGAS for RAG evaluation, red-teaming basics
+
+Rules (follow strictly):
+1. Exactly 300 questions total (75 per difficulty)
+2. Every question has exactly 4 options — keys A, B, C, D — positions 1, 2, 3, 4
+3. correct_answer is a list with exactly ONE key e.g. ["B"]
+4. No LaTeX, no math derivations — real job interview level only
+5. Return ONLY the JSON object — no markdown fences, no extra text
+
+Return this exact JSON structure:
+{
+  "domain": "genai",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "question": "What is the primary purpose of RAG (Retrieval-Augmented Generation)?",
+      "options": [
+        {"key": "A", "value": "To fine-tune an LLM on domain-specific data", "position": 1},
+        {"key": "B", "value": "To ground LLM responses with retrieved external knowledge at inference time", "position": 2},
+        {"key": "C", "value": "To reduce the size of the language model", "position": 3},
+        {"key": "D", "value": "To speed up token generation via caching", "position": 4}
+      ],
+      "correct_answer": ["B"],
+      "explanation": "RAG retrieves relevant documents from an external knowledge base and injects them into the prompt context, allowing the LLM to answer with up-to-date or domain-specific information without retraining.",
+      "job_relevance": "Asked in nearly every GenAI/LLM engineer interview to test RAG fundamentals."
+    }
+  ]
+}
+
+Save output as: prompts/domains/genai.json
+Then run: python scripts/import_questions.py prompts/domains/genai.json

@@ -1,8 +1,7 @@
-"""knowledge_base document schema — Section 4.1 (internal seed content).
+"""knowledge_base document schema — domain-level (no topic/subtopics).
 
-Richer than question_bank and never exposed to the frontend. The option/answer shape
-matches question_bank exactly so copying across is a near-direct field mapping — but note
-the snake_case `correct_answer` here vs camelCase `correctAnswer` in question_bank.
+Questions are stored per domain + difficulty only. The content covers the full
+scope of that domain but individual documents have no topic/subtopic fields.
 """
 
 from __future__ import annotations
@@ -15,19 +14,15 @@ from app.models.question_bank_document import Option
 
 
 class KnowledgeBaseDocument(BaseModel):
-    domain: str
-    topic: str
-    subtopics: list[str] = Field(default_factory=list)
-    difficulty: str  # lowercase: beginner / intermediate / advanced
+    domain: str                          # computer_vision / machine_learning / deep_learning / genai / ai_fundamentals
+    difficulty: str                      # beginner / intermediate / advanced / mixed
     question: str
     options: list[Option]
-    correct_answer: list[str]  # snake_case — internal vocabulary
+    correct_answer: list[str]            # snake_case — internal vocabulary
     explanation: str
     job_relevance: str = ""
-    # Content embedding (question + explanation) for grounding-context retrieval (Section 9.2).
-    embedding: list[float] = Field(default_factory=list)
-    # Topic-matching embedding (topic + subtopics text) for Section 8.1.
-    topic_embedding: list[float] = Field(default_factory=list)
+    embedding: list[float] = Field(default_factory=list)        # content embedding for retrieval ranking
+    domain_embedding: list[float] = Field(default_factory=list) # domain name embedding for domain matching
     quality_reviewed: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 

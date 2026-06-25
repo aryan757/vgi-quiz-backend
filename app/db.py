@@ -1,9 +1,4 @@
-"""Async MongoDB access (Motor) for the live request path.
-
-Exposes a single shared client plus accessors for the two collections described in
-Section 4 of the spec. The seeding script uses PyMongo (sync) separately — see
-scripts/seed_knowledge_base.py.
-"""
+"""Async MongoDB access (Motor) for the live request path."""
 
 from __future__ import annotations
 
@@ -39,22 +34,23 @@ def get_question_bank() -> AsyncIOMotorCollection:
 
 
 async def ping() -> bool:
-    """Return True if the server responds to a ping. Used by /health and startup."""
     await get_client().admin.command("ping")
     return True
 
 
 async def ensure_indexes() -> None:
-    """Create the indexes from Section 4. Idempotent — safe to call on every startup."""
+    """Create indexes. Idempotent — safe to call on every startup."""
     kb = get_knowledge_base()
     qb = get_question_bank()
 
-    # knowledge_base: compound (domain, topic, difficulty) + text index for keyword fallback
-    await kb.create_index([("domain", 1), ("topic", 1), ("difficulty", 1)], name="kb_dom_top_diff")
-    await kb.create_index([("topic", "text"), ("subtopics", "text")], name="kb_text")
+    # knowledge_base: domain + difficulty is the primary filter
+    await kb.create_index([("domain", 1), ("difficulty", 1)], name="kb_domain_diff")
 
-    # question_bank: compound (topic, difficulty) — queried in Step 3 inventory check
+    # question_bank: domain + difficulty — inventory check in Step 3
+    await qb.create_index([("domain", 1), ("difficulty", 1)], name="qb_domain_diff")
+    # keep topic index for backward compat with any existing question_bank docs
     await qb.create_index([("topic", 1), ("difficulty", 1)], name="qb_topic_diff")
+
     logger.info("MongoDB indexes ensured.")
 
 

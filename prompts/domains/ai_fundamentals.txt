@@ -1,0 +1,69 @@
+You are generating MCQ questions for a job-readiness quiz platform for AI/ML engineers.
+
+Domain: ai_fundamentals
+Total questions needed: 300
+
+Split exactly as:
+- 75 questions with difficulty: "beginner"
+- 75 questions with difficulty: "intermediate"
+- 75 questions with difficulty: "advanced"
+- 75 questions with difficulty: "mixed"
+
+Difficulty calibration:
+- beginner   → definitions, basic concepts, what-is questions, types of AI/ML
+- intermediate → practical application, how things work, comparing approaches
+- advanced   → system design, production concerns, research awareness, architectural decisions
+- mixed      → scenario-based or comparative questions spanning multiple areas
+               (e.g. "For this business problem, what ML approach and why?")
+
+Scope — questions MUST collectively cover ALL of the following areas
+(spread questions evenly across these areas, do not focus on just one):
+  • AI/ML basics: supervised, unsupervised, semi-supervised, self-supervised, reinforcement learning
+  • Model lifecycle: problem framing, data collection, feature engineering, training,
+    evaluation, deployment, monitoring
+  • Data fundamentals: train/val/test split, data leakage, class imbalance handling,
+    feature scaling, encoding categorical variables
+  • Evaluation & metrics: choosing the right metric for the task, confusion matrix,
+    cross-validation, A/B testing basics
+  • ML in production: model serving (REST APIs, batch vs real-time), latency vs throughput,
+    model versioning, drift detection, retraining triggers
+  • Ethics & responsible AI: bias in data and models, fairness metrics, explainability (SHAP, LIME),
+    model cards, privacy (federated learning basics)
+  • Compute & infrastructure: GPUs vs CPUs for ML, cloud ML services (AWS SageMaker, GCP Vertex AI,
+    Azure ML) — high-level concepts, when to use managed services
+  • MLOps basics: experiment tracking (MLflow, W&B), CI/CD for ML, model registry,
+    feature stores, data versioning (DVC)
+  • Common interview scenarios: which algorithm for which problem, how to debug a model
+    that isn't converging, how to handle missing data, how to reduce inference latency
+  • AI history & landscape: key milestones (ImageNet, AlexNet, GPT series, diffusion models),
+    foundation models, transfer learning, zero-shot vs few-shot learning
+
+Rules (follow strictly):
+1. Exactly 300 questions total (75 per difficulty)
+2. Every question has exactly 4 options — keys A, B, C, D — positions 1, 2, 3, 4
+3. correct_answer is a list with exactly ONE key e.g. ["B"]
+4. No LaTeX, no math derivations — real job interview level only
+5. Return ONLY the JSON object — no markdown fences, no extra text
+
+Return this exact JSON structure:
+{
+  "domain": "ai_fundamentals",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "question": "What is the difference between supervised and unsupervised learning?",
+      "options": [
+        {"key": "A", "value": "Supervised learning uses more data than unsupervised learning", "position": 1},
+        {"key": "B", "value": "Supervised learning trains on labelled data; unsupervised learning finds patterns in unlabelled data", "position": 2},
+        {"key": "C", "value": "Supervised learning requires a GPU; unsupervised learning does not", "position": 3},
+        {"key": "D", "value": "Supervised learning is only used for classification tasks", "position": 4}
+      ],
+      "correct_answer": ["B"],
+      "explanation": "In supervised learning, each training example has a label the model tries to predict. Unsupervised learning finds structure (clusters, embeddings, etc.) in data without labels.",
+      "job_relevance": "One of the first questions asked in any ML engineer screening interview."
+    }
+  ]
+}
+
+Save output as: prompts/domains/ai_fundamentals.json
+Then run: python scripts/import_questions.py prompts/domains/ai_fundamentals.json

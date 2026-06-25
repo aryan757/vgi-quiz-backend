@@ -1,0 +1,62 @@
+You are generating MCQ questions for a job-readiness quiz platform for AI/ML engineers.
+
+Domain: computer_vision
+Total questions needed: 300
+
+Split exactly as:
+- 75 questions with difficulty: "beginner"
+- 75 questions with difficulty: "intermediate"
+- 75 questions with difficulty: "advanced"
+- 75 questions with difficulty: "mixed"
+
+Difficulty calibration:
+- beginner   → definitions, basic concepts, what-is questions, fundamental usage
+- intermediate → practical patterns, tradeoffs, how-it-works, common mistakes
+- advanced   → deep internals, optimization, system design, edge cases, production concerns
+- mixed      → scenario-based or comparative questions that combine concepts across levels
+               (e.g. "Given this situation, what would you do and why?" or "Compare X vs Y")
+
+Scope — questions MUST collectively cover ALL of the following areas
+(spread questions evenly across these areas, do not focus on just one):
+  • CNN architecture: kernels, filters, padding, stride, pooling layers
+  • Activation functions: ReLU, sigmoid, tanh, softmax, leaky ReLU
+  • Batch normalization: purpose, internal covariate shift, training vs inference behavior
+  • Regularization: dropout, L1/L2, overfitting vs underfitting
+  • Network depth tradeoffs: depth vs width, vanishing/exploding gradients, skip connections
+  • Classic architectures: LeNet, VGG, ResNet, Inception — conceptual understanding
+  • Object detection: IoU, anchor boxes, NMS, precision/recall tradeoffs
+  • YOLO family: YOLOv5, YOLOv8, YOLOv10, YOLOv11, YOLO-World — architecture intuition,
+    training workflow, export formats, inference
+  • Image segmentation: semantic vs instance segmentation, mask R-CNN concepts
+  • CV practical pipeline: OpenCV preprocessing, annotation workflows,
+    export formats (ONNX, TensorRT, CoreML, OpenVINO), experiment tracking (MLflow, W&B)
+
+Rules (follow strictly):
+1. Exactly 300 questions total (75 per difficulty)
+2. Every question has exactly 4 options — keys A, B, C, D — positions 1, 2, 3, 4
+3. correct_answer is a list with exactly ONE key e.g. ["B"]
+4. No LaTeX, no math derivations — real job interview level only
+5. Return ONLY the JSON object — no markdown fences, no extra text
+
+Return this exact JSON structure:
+{
+  "domain": "computer_vision",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "question": "What is the purpose of a pooling layer in a CNN?",
+      "options": [
+        {"key": "A", "value": "To increase the spatial resolution of feature maps", "position": 1},
+        {"key": "B", "value": "To reduce spatial dimensions and add translation invariance", "position": 2},
+        {"key": "C", "value": "To apply non-linear activation to feature maps", "position": 3},
+        {"key": "D", "value": "To normalize the output of convolutional layers", "position": 4}
+      ],
+      "correct_answer": ["B"],
+      "explanation": "Pooling layers downsample feature maps, reducing spatial size while retaining key features, which also provides some translation invariance.",
+      "job_relevance": "Asked to test understanding of CNN building blocks in ML engineer interviews."
+    }
+  ]
+}
+
+Save output as: prompts/domains/computer_vision.json
+Then run: python scripts/import_questions.py prompts/domains/computer_vision.json

@@ -1,0 +1,63 @@
+You are generating MCQ questions for a job-readiness quiz platform for AI/ML engineers.
+
+Domain: machine_learning
+Total questions needed: 300
+
+Split exactly as:
+- 75 questions with difficulty: "beginner"
+- 75 questions with difficulty: "intermediate"
+- 75 questions with difficulty: "advanced"
+- 75 questions with difficulty: "mixed"
+
+Difficulty calibration:
+- beginner   → definitions, basic concepts, what-is questions, fundamental usage
+- intermediate → practical patterns, tradeoffs, how-it-works, common mistakes
+- advanced   → deep internals, optimization, system design, edge cases, production concerns
+- mixed      → scenario-based or comparative questions that combine concepts across levels
+               (e.g. "Given this dataset/situation, which algorithm and why?" or "Compare X vs Y")
+
+Scope — questions MUST collectively cover ALL of the following areas
+(spread questions evenly across these areas, do not focus on just one):
+  • Supervised learning: Linear Regression, Logistic Regression, regularization (Ridge, Lasso)
+  • Tree-based models: Decision Trees (splitting criteria, gini, entropy, pruning)
+  • Ensemble methods: Random Forest, Bagging, AdaBoost, Gradient Boosting, XGBoost
+  • Instance-based: KNN (distance metrics, k selection, curse of dimensionality)
+  • Kernel methods: SVM (margin, kernels, support vectors, C parameter)
+  • Clustering: K-Means (inertia, elbow method), DBSCAN, Agglomerative Clustering
+  • Probabilistic: Naive Bayes (Gaussian, Multinomial, conditional independence assumption)
+  • Problem framing: Classification vs Regression, supervised vs unsupervised vs semi-supervised
+  • Loss functions: MSE, MAE, cross-entropy, hinge loss — when to use which
+  • Evaluation metrics: accuracy, precision, recall, F1, ROC-AUC, confusion matrix, PR curve
+  • Model selection: bias-variance tradeoff, overfitting/underfitting, cross-validation
+  • Applied statistics: EDA, distribution checks, outlier handling, feature scaling
+  • scikit-learn practical: pipelines, train/test split, GridSearchCV, ColumnTransformer
+
+Rules (follow strictly):
+1. Exactly 300 questions total (75 per difficulty)
+2. Every question has exactly 4 options — keys A, B, C, D — positions 1, 2, 3, 4
+3. correct_answer is a list with exactly ONE key e.g. ["B"]
+4. No LaTeX, no math derivations — real job interview level only
+5. Return ONLY the JSON object — no markdown fences, no extra text
+
+Return this exact JSON structure:
+{
+  "domain": "machine_learning",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "question": "What does the bias-variance tradeoff describe?",
+      "options": [
+        {"key": "A", "value": "The tradeoff between model accuracy and training speed", "position": 1},
+        {"key": "B", "value": "The tension between a model's ability to fit training data and generalise to new data", "position": 2},
+        {"key": "C", "value": "The balance between the number of features and number of samples", "position": 3},
+        {"key": "D", "value": "The tradeoff between precision and recall in classification", "position": 4}
+      ],
+      "correct_answer": ["B"],
+      "explanation": "High bias means the model underfits (too simple); high variance means it overfits (too complex). The goal is to find the sweet spot that generalises well.",
+      "job_relevance": "One of the most commonly asked ML fundamentals questions in technical interviews."
+    }
+  ]
+}
+
+Save output as: prompts/domains/machine_learning.json
+Then run: python scripts/import_questions.py prompts/domains/machine_learning.json

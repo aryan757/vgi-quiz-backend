@@ -1,82 +1,54 @@
-"""Knowledge-base taxonomy: domain -> topic -> subtopics (Section 5).
+"""Domain registry — the 5 known domains and their aliases/keywords.
 
-Kept separate from script logic so it can be edited without touching code. The seeding
-script (Section 7) iterates over this; the topic matcher (Section 8) draws its set of
-canonical topic names from here.
-
-Difficulty levels are NOT encoded here — every (domain, topic) is seeded across all three
-concrete levels (beginner / intermediate / advanced).
+No topics or subtopics here. The knowledge base stores questions at the domain level only.
+This file is the single source of truth for:
+  - Valid domain names
+  - Aliases used in fast-path domain matching (e.g. "vision" → "computer_vision")
+  - Scope descriptions used in LLM generation prompts
 """
 
 from __future__ import annotations
 
-TAXONOMY: dict[str, dict[str, list[str]]] = {
+DOMAINS: dict[str, dict] = {
     "computer_vision": {
-        "CNN Fundamentals": ["kernels", "filters", "padding", "stride", "pooling"],
-        "Activation Functions": ["relu", "sigmoid", "tanh", "softmax", "leaky relu"],
-        "Batch Normalization": ["internal covariate shift", "training stability"],
-        "Dropout & Regularization": ["dropout", "l1/l2", "overfitting prevention"],
-        "Network Depth Tradeoffs": ["hidden layers", "depth vs width", "vanishing gradients"],
-        "Classic CNN Architectures": ["LeNet", "VGG", "ResNet", "Inception"],
-        "Object Detection Fundamentals": ["IoU", "anchor boxes", "NMS"],
-        "YOLO Family": ["YOLOv5", "YOLOv8", "YOLOv10", "YOLOv11", "YOLO-World", "training/export/inference"],
-        "Image Segmentation": ["semantic segmentation", "instance segmentation"],
-        "CV Practical Pipeline": ["OpenCV preprocessing", "annotation", "ONNX", "TensorRT", "CoreML", "OpenVINO", "MLflow", "W&B"],
+        "aliases": ["cv", "vision", "computer vision", "image processing", "object detection",
+                    "yolo", "cnn", "convolutional"],
+        "description": "Computer Vision — CNNs, object detection, YOLO, segmentation, OpenCV pipelines",
     },
     "machine_learning": {
-        "Linear & Logistic Regression": ["linear regression", "logistic regression", "regularization"],
-        "Decision Trees": ["splitting criteria", "gini", "entropy", "pruning"],
-        "Random Forest": ["bagging", "feature importance", "ensembles"],
-        "Bagging & Boosting": ["bagging", "AdaBoost", "gradient boosting", "XGBoost"],
-        "KNN": ["distance metrics", "k selection", "curse of dimensionality"],
-        "SVM": ["margin", "kernels", "support vectors"],
-        "K-Means": ["centroids", "inertia", "elbow method"],
-        "DBSCAN": ["density-based clustering", "epsilon", "min samples"],
-        "Agglomerative Clustering": ["hierarchical clustering", "linkage", "dendrograms"],
-        "Naive Bayes": ["bayes theorem", "conditional independence", "gaussian/multinomial"],
-        "Classification vs Regression": ["problem framing", "output types"],
-        "Loss Functions": ["MSE", "cross-entropy", "hinge loss"],
-        "Evaluation Metrics": ["accuracy", "precision", "recall", "F1", "ROC-AUC", "confusion matrix"],
-        "Supervised vs Unsupervised": ["labels", "task types"],
-        "Bias-Variance & Overfitting": ["bias-variance tradeoff", "overfitting", "underfitting"],
-        "EDA & Distributions": ["exploratory data analysis", "distribution checks", "outliers"],
-        "scikit-learn Practical": ["pipelines", "train/test split", "cross-validation", "hyperparameter tuning"],
+        "aliases": ["ml", "classical ml", "sklearn", "scikit", "random forest", "svm",
+                    "regression", "classification", "clustering"],
+        "description": "Machine Learning — regression, trees, ensembles, clustering, evaluation metrics",
     },
     "deep_learning": {
-        "Neural Network Fundamentals": ["forward pass", "backpropagation intuition", "gradient descent"],
-        "RNN": ["sequence modeling", "vanishing gradient", "hidden state"],
-        "LSTM": ["forget gate", "input gate", "output gate", "long-term dependencies"],
-        "Transformer Architecture": ["self-attention", "multi-head attention", "positional encoding"],
+        "aliases": ["dl", "neural network", "neural networks", "lstm", "rnn", "transformer",
+                    "backprop", "deep neural"],
+        "description": "Deep Learning — neural networks, RNN, LSTM, Transformers",
     },
     "genai": {
-        "LangChain": ["prompt templates", "chains", "tools", "agents", "memory", "InMemorySaver", "LCEL"],
-        "RAG": ["embeddings", "chunking", "vector search", "HNSW", "reranking", "hybrid search"],
-        "AI Agents": ["ReAct pattern", "tool calling", "agent loops"],
-        "MCP": ["model context protocol", "vs tool call", "why it exists"],
-        "Google ADK": ["agent development kit", "concepts", "vs LangChain"],
-        "Fine-tuning": ["full fine-tuning", "LoRA", "QLoRA", "prompt-tuning", "instruction-tuning"],
-        "Hugging Face": ["Transformers library", "model hub", "pipelines"],
-        "Transformers": ["self-attention", "encoder-decoder", "attention is all you need"],
-        # Additional well-known interview topics permitted by Section 5.
-        "Vector Databases": ["FAISS", "Pinecone", "Chroma", "indexing", "ANN search"],
-        "Inference Optimization": ["quantization", "int8", "distillation", "KV cache"],
-        "LLM Evaluation": ["benchmarks", "LLM-as-judge", "hallucination metrics"],
+        "aliases": ["gen ai", "generative ai", "llm", "large language model", "langchain",
+                    "rag", "agents", "fine tuning", "fine-tuning", "gpt", "claude"],
+        "description": "Generative AI — LangChain, RAG, agents, fine-tuning, vector DBs, LLM evaluation",
+    },
+    "ai_fundamentals": {
+        "aliases": ["ai", "artificial intelligence", "ml basics", "ai basics", "fundamentals",
+                    "mlops", "responsible ai", "ml lifecycle", "model deployment"],
+        "description": "AI Fundamentals — ML lifecycle, MLOps, responsible AI, production ML",
     },
 }
 
-
-def all_topics() -> list[str]:
-    """Flat list of every canonical topic name across all domains."""
-    return [topic for topics in TAXONOMY.values() for topic in topics]
+VALID_DOMAINS = list(DOMAINS.keys())
 
 
-def topic_to_domain() -> dict[str, str]:
-    """Map each canonical topic name -> its domain."""
-    return {topic: domain for domain, topics in TAXONOMY.items() for topic in topics}
+def all_domain_aliases() -> dict[str, str]:
+    """Flat map of every alias → canonical domain name."""
+    result = {}
+    for domain, meta in DOMAINS.items():
+        result[domain] = domain  # canonical name maps to itself
+        for alias in meta["aliases"]:
+            result[alias.lower()] = domain
+    return result
 
 
-def subtopics_for(topic: str) -> list[str]:
-    for topics in TAXONOMY.values():
-        if topic in topics:
-            return topics[topic]
-    return []
+def domain_description(domain: str) -> str:
+    return DOMAINS.get(domain, {}).get("description", domain)
