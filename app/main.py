@@ -10,6 +10,7 @@ from fastapi import FastAPI
 from app.config import get_settings
 from app.db import close_client, ensure_indexes, ping
 from app.routes.generate_questions import router as generate_questions_router
+from app.routes.random_questions import router as random_questions_router
 
 settings = get_settings()
 logging.basicConfig(level=settings.log_level.upper())
@@ -38,6 +39,7 @@ app = FastAPI(
 )
 
 app.include_router(generate_questions_router)
+app.include_router(random_questions_router)
 
 
 @app.get("/health")

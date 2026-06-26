@@ -269,6 +269,42 @@ Any value not matching the above goes to the embedding matcher, and if still unm
 | LLM call failed after retry | `502` |
 | MongoDB write failed | `503` |
 
+### `GET /random-questions`
+
+Pulls a random set of questions **mixed across all domains** straight from the
+`knowledge_base` using MongoDB's `$sample` aggregation. Read-only — never calls the LLM.
+
+**Query params**
+
+| Param | Type | Required | Default | Notes |
+|---|---|---|---|---|
+| `count` | integer 1–50 | No | `15` | Number of random questions to return |
+
+**Response**
+```json
+{
+  "success": true,
+  "message": "Fetched 15 random questions across all domains.",
+  "count": 15,
+  "questions": [
+    {
+      "domain": "computer_vision",
+      "difficulty": "beginner",
+      "question": "What does IoU measure in object detection?",
+      "options": [ ... ],
+      "correct_answer": [ ... ],
+      "explanation": "...",
+      "job_relevance": "..."
+    }
+  ]
+}
+```
+
+| Scenario | HTTP |
+|---|---|
+| `count` out of range (not 1–50) | `422` |
+| MongoDB read failed | `503` |
+
 ---
 
 ## Postman Testing Guide
@@ -410,6 +446,25 @@ Expected: `501` → `{ "success": false, "message": "type='DAILY' is not impleme
 ```json
 {"type":"CUSTOM","question_count":5}
 ```
+
+---
+
+### Random questions (GET, mixed domains)
+
+**21. Default 15 questions**
+- Method: `GET`
+- URL: `http://localhost:8000/random-questions`
+
+Expected: `200` → `{ "success": true, "count": 15, "questions": [ ... ] }`
+
+**22. Custom count**
+- Method: `GET`
+- URL: `http://localhost:8000/random-questions?count=5`
+
+Expected: `200` → 5 random questions mixed across all domains.
+
+**23. Out-of-range count → 422**
+- URL: `http://localhost:8000/random-questions?count=0` (or `count=99`)
 
 **21. Missing question_count → 422**
 ```json
