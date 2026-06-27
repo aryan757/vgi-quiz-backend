@@ -33,6 +33,10 @@ def get_question_bank() -> AsyncIOMotorCollection:
     return get_database()[get_settings().question_bank_collection]
 
 
+def get_random_question_collection() -> AsyncIOMotorCollection:
+    return get_database()[get_settings().random_question_collection]
+
+
 async def ping() -> bool:
     await get_client().admin.command("ping")
     return True

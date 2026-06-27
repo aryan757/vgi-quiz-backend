@@ -207,6 +207,30 @@ Every question this API has ever served. Written by the live endpoint only.
 
 > `correctAnswer` is camelCase — this is intentional per the frontend contract. Do not rename it.
 
+### `random-question-collection` (output log for `GET /random-questions`)
+
+One document per `GET /random-questions` call — a saved batch of the AI-generated set.
+
+```json
+{
+  "_id": "ObjectId",
+  "batch_id": "e7e55dee-047d-4014-b29c-fa2706578991",
+  "count": 15,
+  "questions": [
+    {
+      "domain": "computer_vision",
+      "difficulty": "beginner",
+      "question": "...",
+      "options": [ {"key": "A", "value": "...", "position": 1}, ... ],
+      "correct_answer": ["B"],
+      "explanation": "...",
+      "job_relevance": "..."
+    }
+  ],
+  "created_at": "ISODate"
+}
+```
+
 ---
 
 ## Supported Domains
@@ -271,28 +295,34 @@ Any value not matching the above goes to the embedding matcher, and if still unm
 
 ### `GET /random-questions`
 
-Pulls a random set of questions **mixed across all domains** straight from the
-`knowledge_base` using MongoDB's `$sample` aggregation. Read-only — never calls the LLM.
+**AI-generates** a fresh set of questions on every call (it does **not** read from the
+`knowledge_base`). The set is spread **across all domains** at an **easy–medium** level
+(`beginner`/`intermediate` only). Each generated batch is saved to the
+`random-question-collection` Mongo collection.
+
+- 15 questions → ≈3 from each of the 5 domains (`computer_vision`, `machine_learning`,
+  `deep_learning`, `genai`, `ai_fundamentals`).
+- Uses the LLM via LangChain structured output (same provider/model as `/generate-questions`).
 
 **Query params**
 
 | Param | Type | Required | Default | Notes |
 |---|---|---|---|---|
-| `count` | integer 1–50 | No | `15` | Number of random questions to return |
+| `count` | integer 1–50 | No | `15` | Number of questions to generate, spread across domains |
 
 **Response**
 ```json
 {
   "success": true,
-  "message": "Fetched 15 random questions across all domains.",
+  "message": "Generated 15 questions across all domains.",
   "count": 15,
   "questions": [
     {
       "domain": "computer_vision",
       "difficulty": "beginner",
-      "question": "What does IoU measure in object detection?",
-      "options": [ ... ],
-      "correct_answer": [ ... ],
+      "question": "What is the primary purpose of image classification?",
+      "options": [ { "key": "A", "value": "...", "position": 1 }, ... ],
+      "correct_answer": ["B"],
       "explanation": "...",
       "job_relevance": "..."
     }
@@ -300,10 +330,18 @@ Pulls a random set of questions **mixed across all domains** straight from the
 }
 ```
 
+**Saved batch** (in `random-question-collection`):
+```json
+{ "batch_id": "<uuid>", "count": 15, "questions": [ ... ], "created_at": "<utc>" }
+```
+
 | Scenario | HTTP |
 |---|---|
 | `count` out of range (not 1–50) | `422` |
-| MongoDB read failed | `503` |
+| LLM returned no valid questions / generation failed | `502` |
+
+> Mongo save failures are logged but do **not** fail the response — you still get the
+> generated questions back.
 
 ---
 
@@ -447,29 +485,28 @@ Expected: `501` → `{ "success": false, "message": "type='DAILY' is not impleme
 {"type":"CUSTOM","question_count":5}
 ```
 
----
-
-### Random questions (GET, mixed domains)
-
-**21. Default 15 questions**
-- Method: `GET`
-- URL: `http://localhost:8000/random-questions`
-
-Expected: `200` → `{ "success": true, "count": 15, "questions": [ ... ] }`
-
-**22. Custom count**
-- Method: `GET`
-- URL: `http://localhost:8000/random-questions?count=5`
-
-Expected: `200` → 5 random questions mixed across all domains.
-
-**23. Out-of-range count → 422**
-- URL: `http://localhost:8000/random-questions?count=0` (or `count=99`)
-
 **21. Missing question_count → 422**
 ```json
 {"type":"CUSTOM","topic":"genai"}
 ```
+
+---
+
+### Random questions (GET — AI-generated, all domains)
+
+**22. Default 15 questions**
+- Method: `GET`
+- URL: `http://localhost:8000/random-questions`
+
+Expected: `200` → 15 AI-generated questions spread across all 5 domains (easy–medium),
+also saved to `random-question-collection`.
+
+**23. Custom count**
+- Method: `GET`
+- URL: `http://localhost:8000/random-questions?count=10`
+
+**24. Out-of-range count → 422**
+- URL: `http://localhost:8000/random-questions?count=0` (or `count=99`)
 
 ---
 
@@ -524,6 +561,63 @@ Expected JSON format from the LLM:
 
 ---
 
+## Scheduling `GET /random-questions` with n8n
+
+A scheduled n8n workflow can hit `GET /random-questions` automatically (e.g. to generate
+and store a fresh batch every day).
+
+**Workflow:** `Daily Random Questions (midnight IST)` — runs daily at **00:00 Asia/Kolkata**.
+It has two nodes: a **Schedule Trigger** → an **HTTP Request** (`GET` the endpoint).
+
+You can create it through the n8n public API (replace the placeholders — never commit the key):
+
+```bash
+export N8N_KEY="<your-n8n-public-api-key>"     # keep this out of git
+export N8N_BASE="https://<your-n8n-host>"
+export API_URL="https://<your-public-api-host>/random-questions"
+
+curl -X POST "$N8N_BASE/api/v1/workflows" \
+  -H "X-N8N-API-KEY: $N8N_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Daily Random Questions (midnight IST)",
+    "nodes": [
+      {
+        "parameters": { "rule": { "interval": [
+          { "field": "days", "daysInterval": 1, "triggerAtHour": 0, "triggerAtMinute": 0 }
+        ] } },
+        "id": "node-schedule", "name": "Daily at Midnight IST",
+        "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.2, "position": [400, 300]
+      },
+      {
+        "parameters": {
+          "method": "GET", "url": "'"$API_URL"'",
+          "sendQuery": true,
+          "queryParameters": { "parameters": [ { "name": "count", "value": "15" } ] },
+          "options": { "timeout": 60000 }
+        },
+        "id": "node-http", "name": "GET /random-questions",
+        "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [640, 300]
+      }
+    ],
+    "connections": {
+      "Daily at Midnight IST": { "main": [ [ { "node": "GET /random-questions", "type": "main", "index": 0 } ] ] }
+    },
+    "settings": { "executionOrder": "v1", "timezone": "Asia/Kolkata" }
+  }'
+
+# then activate it (use the id returned above):
+curl -X POST "$N8N_BASE/api/v1/workflows/<workflow-id>/activate" \
+  -H "X-N8N-API-KEY: $N8N_KEY"
+```
+
+Notes:
+- `settings.timezone: "Asia/Kolkata"` makes `triggerAtHour: 0` mean midnight **IST**.
+- The API must be reachable from n8n's server (a public URL or tunnel — not `localhost`).
+- Add auth headers to the HTTP node if/when the endpoint is no longer public.
+
+---
+
 ## Project Structure
 
 ```
@@ -541,12 +635,14 @@ app/
     knowledge_base_document.py   # Internal seed schema (domain-level, no topics)
   routes/
     generate_questions.py        # Thin route — validates, delegates, maps errors
+    random_questions.py          # GET /random-questions — AI-generate + save batch
   services/
     llm_provider.py              # Anthropic/OpenAI switch via env var
     embeddings.py                # OpenAI embeddings wrapper (async + sync)
     topic_matcher.py             # Domain matcher — alias → embedding fallback
     kb_retriever.py              # Filter + rank KB docs by domain + similarity
     llm_question_generator.py    # Structured output chain + retry
+    random_question_generator.py # All-domains easy-medium generator (/random-questions)
     quiz_generator.py            # 5-step orchestration — all branching logic lives here
   utils/
     transforms.py                # ONLY place mapping correct_answer ↔ correctAnswer

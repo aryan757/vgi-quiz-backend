@@ -1,57 +1,76 @@
-"""GET /random-questions — pull N random questions mixed across ALL domains.
+"""GET /random-questions — AI-generate N questions covering ALL domains.
 
-Uses MongoDB's $sample aggregation to fetch a uniform random set straight from the
-knowledge_base, regardless of domain or difficulty. Embeddings are excluded from the
-output. This is a read-only convenience endpoint; it never calls the LLM.
+Each call generates a fresh set of MCQs with the LLM (NOT read from knowledge_base),
+spread across all domains at an easy-medium level. The generated batch is saved to the
+`random-question-collection` Mongo collection and returned to the caller.
 """
 
 from __future__ import annotations
 
 import logging
+import uuid
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Query
 from fastapi.responses import JSONResponse
 
-from app.db import get_knowledge_base
+from app.db import get_random_question_collection
+from app.services.random_question_generator import RandomQuestionGenerator
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-_PROJECTION = {
-    "_id": 0,
-    "domain": 1,
-    "difficulty": 1,
-    "question": 1,
-    "options": 1,
-    "correct_answer": 1,
-    "explanation": 1,
-    "job_relevance": 1,
-}
+_generator: RandomQuestionGenerator | None = None
+
+
+def get_random_generator() -> RandomQuestionGenerator:
+    global _generator
+    if _generator is None:
+        _generator = RandomQuestionGenerator()
+    return _generator
 
 
 @router.get("/random-questions")
 async def random_questions(count: int = Query(15, ge=1, le=50)):
-    """Return `count` (default 15) random questions mixed from every domain."""
+    """AI-generate `count` (default 15) easy-medium questions across all domains."""
     try:
-        kb = get_knowledge_base()
-        pipeline = [
-            {"$sample": {"size": count}},
-            {"$project": _PROJECTION},
-        ]
-        questions = [doc async for doc in kb.aggregate(pipeline)]
+        questions = await get_random_generator().generate(count)
+        if not questions:
+            return JSONResponse(
+                status_code=502,
+                content={
+                    "success": False,
+                    "message": "Question generation failed (LLM returned no valid questions).",
+                    "count": 0,
+                    "questions": [],
+                },
+            )
+
+        # Save the generated batch to its own collection (a log of what was produced).
+        batch_id = str(uuid.uuid4())
+        try:
+            await get_random_question_collection().insert_one({
+                "batch_id": batch_id,
+                "count": len(questions),
+                "questions": questions,
+                "created_at": datetime.now(timezone.utc),
+            })
+        except Exception as exc:  # noqa: BLE001 — saving must not break the response
+            logger.warning("Failed to save random-question batch %s: %s", batch_id, exc)
+
         return {
             "success": True,
-            "message": f"Fetched {len(questions)} random questions across all domains.",
+            "message": f"Generated {len(questions)} questions across all domains.",
             "count": len(questions),
             "questions": questions,
         }
     except Exception as exc:  # noqa: BLE001
-        logger.exception("Failed to fetch random questions")
+        logger.exception("Failed to generate random questions")
         return JSONResponse(
-            status_code=503,
+            status_code=502,
             content={
                 "success": False,
-                "message": f"Failed to fetch random questions: {exc}",
+                "message": f"Failed to generate random questions: {exc}",
                 "count": 0,
                 "questions": [],
             },

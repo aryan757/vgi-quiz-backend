@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     database_name: str = Field("vgi_skill_lab", alias="DATABASE_NAME")
     knowledge_base_collection: str = Field("knowledge_base", alias="KNOWLEDGE_BASE_COLLECTION")
     question_bank_collection: str = Field("question_bank", alias="QUESTION_BANK_COLLECTION")
+    random_question_collection: str = Field(
+        "random-question-collection", alias="RANDOM_QUESTION_COLLECTION"
+    )
 
     # --- LLM provider (generation only) ---
     llm_provider: Literal["anthropic", "openai"] = Field("openai", alias="LLM_PROVIDER")
